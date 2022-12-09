@@ -9,6 +9,7 @@ object Day9 {
     var visitedByTail = mutableSetOf<Pair<Int,Int>>()
     var head = Position(0,0)
     var tail = Position(0,0)
+    var knots = mutableListOf<Position>()
 
     fun readinput() {
 
@@ -86,6 +87,29 @@ object Day9 {
 
     fun part2(){
         readinput()
+        for (i in 1..10) {
+            knots.add(Position(0,0))
+        }
+
+
+        instructions.forEach {
+            for (i in 1.. it.second){
+                head = knots[0]
+                moveHead(it.first)
+                for (i in 1 .. 9 ){
+                    head = knots[i-1]
+                    tail = knots[i]
+
+                    moveTail()
+                }
+
+                visitedByTail.add(Pair(knots[9].x, knots[9].y))
+            }
+            /*    print("head" + head.x + " " + head.y)
+                println("-- tail" + tail.x + " " + tail.y)
+                println(visitedByTail.size)*/
+        }
+        println(visitedByTail.size)
 
     }
 }

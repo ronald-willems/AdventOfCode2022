@@ -12,7 +12,7 @@ object Day10 {
     fun readinput() {
 
 
-        File("src/main/resources/Day10/Testnput.txt").forEachLine { line ->
+        File("src/main/resources/Day10/TestInput.txt").forEachLine { line ->
             val elements = line.split(" ")
 
             if (elements[0]=="noop")

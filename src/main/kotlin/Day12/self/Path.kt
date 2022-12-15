@@ -1,4 +1,4 @@
-package Day12
+package Day12.self
 
 import kotlin.math.absoluteValue
 
@@ -9,9 +9,9 @@ data class Path(val points:MutableList<Pair<Int,Int>>){
 
     init{
         val curr = points.last()
-        distance+= (curr.first-Day12.end.first).absoluteValue
-        distance+= (curr.second-Day12.end.second).absoluteValue
-        height = Day12.map.getOrDefault(curr,1)
+        distance+= (curr.first-Day12Self.end.first).absoluteValue
+        distance+= (curr.second-Day12Self.end.second).absoluteValue
+        height = Day12Self.map.getOrDefault(curr,1)
 
     }
 
@@ -37,8 +37,8 @@ data class Path(val points:MutableList<Pair<Int,Int>>){
     }
 
     fun isMax1Higher(curr:Pair<Int,Int>, new: Pair<Int,Int>):Boolean{
-        val currHeight = Day12.map.get(curr)
-        val newHeight = Day12.map.get(new)
+        val currHeight = Day12Self.map.get(curr)
+        val newHeight = Day12Self.map.get(new)
         //check if on map.
         if (newHeight!=null){
             if ((newHeight -  currHeight!!).absoluteValue<=1) return true
@@ -56,8 +56,8 @@ data class Path(val points:MutableList<Pair<Int,Int>>){
     }
 
     fun alreadyVisitedFaster(pos:Pair<Int,Int>):Boolean{
-        val allPaths = Day12.openPaths.toMutableList()
-        allPaths.addAll(Day12.finishedPaths)
+        val allPaths = Day12Self.openPaths.toMutableList()
+        allPaths.addAll(Day12Self.finishedPaths)
         allPaths.forEach {
             if (it != this && it.alreadyVisited(pos)){
                 if (this.points.size>it.points.indexOf(pos)) return true
@@ -69,8 +69,8 @@ data class Path(val points:MutableList<Pair<Int,Int>>){
     }
 
     fun display(){
-        for (y in 0..Day12.sizeY-1){
-            for (x in 0.. Day12.sizeX-1){
+        for (y in 0..Day12Self.sizeY-1){
+            for (x in 0.. Day12Self.sizeX-1){
                 if (alreadyVisited(Pair(x,y))) print("#")
                 else print(".")
                 // print height

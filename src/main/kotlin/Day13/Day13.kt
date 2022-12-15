@@ -7,17 +7,8 @@ object Day13 {
     private val myComparator =  Comparator<List<Any>> { a, b ->
         when {
             rightOrder(a,b)==true -> -1
-
             else -> 1
-
         }
-    /*    when (rightOrder(a,b) {
-            null -> 1
-
-            (a == null && b == null) -> 0
-            (a == null) -> -1
-            else -> 1
-        }*/
     }
 
 

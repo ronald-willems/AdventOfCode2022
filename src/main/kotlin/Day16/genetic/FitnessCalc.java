@@ -33,9 +33,9 @@ public class FitnessCalc {
         int fitness = 0;
         // Loop through our individuals genes and compare them to our cadidates
         for (int i = 0; i < individual.size() && i < solution.length; i++) {
-            if (individual.getGene(i) == solution[i]) {
+            /*if (individual.getGene(i) == solution[i]) {
                 fitness++;
-            }
+            }*/
         }
         return fitness;
     }

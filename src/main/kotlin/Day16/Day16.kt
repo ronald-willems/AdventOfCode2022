@@ -9,6 +9,8 @@ object Day16 {
     var firstValve = Valve("XX")
 
 
+
+
     fun createOrGetValve(name:String):Valve{
         val found = allValves.filter { it.name==name }
         if (found.size>0) return found[0]

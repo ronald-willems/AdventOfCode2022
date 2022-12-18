@@ -1,54 +1,38 @@
 package Day16.genetic;
 
 
-public class Individual {
+import Day16.Path;
 
-    static int defaultGeneLength = 64;
-    private byte[] genes = new byte[defaultGeneLength];
-    // Cache
+public class Individual {
+    public PathIndividual pi = new PathIndividual( new Path());
+
     private int fitness = 0;
 
     // Create a random individual
     public void generateIndividual() {
-        for (int i = 0; i < size(); i++) {
-            byte gene = (byte) Math.round(Math.random());
-            genes[i] = gene;
-        }
+        pi.fillRandom();
+
+
     }
 
-    /* Getters and setters */
-    // Use this if you want to create individuals with different gene lengths
-    public static void setDefaultGeneLength(int length) {
-        defaultGeneLength = length;
-    }
 
-    public byte getGene(int index) {
-        return genes[index];
-    }
-
-    public void setGene(int index, byte value) {
-        genes[index] = value;
-        fitness = 0;
-    }
 
     /* Public methods */
     public int size() {
-        return genes.length;
+        return pi.size();
     }
 
     public int getFitness() {
         if (fitness == 0) {
-            fitness = FitnessCalc.getFitness(this);
+           // fitness = FitnessCalc.getFitness(this);
+            fitness = pi.getPath().calcPressure();
         }
         return fitness;
     }
 
     @Override
     public String toString() {
-        String geneString = "";
-        for (int i = 0; i < size(); i++) {
-            geneString += getGene(i);
-        }
-        return geneString;
+
+        return pi.getPath().toString();
     }
 }

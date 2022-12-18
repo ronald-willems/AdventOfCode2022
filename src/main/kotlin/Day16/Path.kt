@@ -1,13 +1,27 @@
 package Day16
 
+import kotlin.random.Random
+
 class Path {
     val valves = mutableListOf<Valve>()
-    val passedValves = mutableListOf<Valve>()
+    val turnedValves = mutableListOf<Valve>()
+
+
 
     fun initValves(inputlist: String) {
         for (i in 0..inputlist.length - 2 step 2) {
             valves.add(Day16.createOrGetValve(inputlist.substring(i, i + 2)))
         }
+    }
+
+    fun addValve(valve:Valve){
+     valves.add(valve)
+    }
+
+    fun turnValve(valve:Valve){
+        println("Turn" + valve.name)
+        valves.add(valve)
+        turnedValves.add(valve)
     }
 
 
@@ -29,5 +43,9 @@ class Path {
 
         }
         return totalPressure
+    }
+
+    override fun toString():String{
+        return valves.map {  it.name }.toString()
     }
 }

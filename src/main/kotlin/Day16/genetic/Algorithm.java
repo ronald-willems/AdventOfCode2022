@@ -46,28 +46,17 @@ public class Algorithm {
     // Crossover individuals
     private static Individual crossover(Individual indiv1, Individual indiv2) {
         Individual newSol = new Individual();
+        newSol.generateIndividual();
         // Loop through genes
-        for (int i = 0; i < indiv1.size(); i++) {
-            // Crossover
-            if (Math.random() <= uniformRate) {
-                newSol.setGene(i, indiv1.getGene(i));
-            } else {
-                newSol.setGene(i, indiv2.getGene(i));
-            }
-        }
+        //TODO: Crossover maken
         return newSol;
     }
 
     // Mutate an individual
     private static void mutate(Individual indiv) {
-        // Loop through genes
-        for (int i = 0; i < indiv.size(); i++) {
-            if (Math.random() <= mutationRate) {
-                // Create random gene
-                byte gene = (byte) Math.round(Math.random());
-                indiv.setGene(i, gene);
-            }
-        }
+
+        indiv.pi.mutate();
+
     }
 
     // Select individuals for crossover

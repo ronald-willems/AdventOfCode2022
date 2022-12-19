@@ -52,7 +52,6 @@ object Day12Self {
 
     fun part1(inputType:String, maxIt:Int = Int.MAX_VALUE){
         readinput(inputType)
-        end = Pair(126,34)
         var whilenr = 0
         while (openPaths.size>0 && whilenr<maxIt){
 

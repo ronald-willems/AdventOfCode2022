@@ -41,11 +41,11 @@ data class Path(val points:MutableList<Pair<Int,Int>>){
         val newHeight = Day12Self.map.get(new)
         //check if on map.
         if (newHeight!=null){
-            if ((newHeight -  currHeight!!).absoluteValue<=1) return true
+            //if ((newHeight -  currHeight!!).absoluteValue<=1) return true
             //if ((newHeight - 1) == currHeight!!) return true
             //if (newHeight  == currHeight!!) return true
 
-            //if ((newHeight - 1) <= currHeight!!) return true
+            if ((newHeight - 1) <= currHeight!!) return true
         }
         return false
     }

@@ -15,4 +15,15 @@ internal class Day18Test {
     fun part1() {
         Day18.part1("Test")
     }
+
+    @Test
+    fun print() {
+        Day18.printAll("Test")
+    }
+
+    @Test
+    fun part2(){
+        val notConn = Day18.part2("Test")
+        println(notConn)
+    }
 }

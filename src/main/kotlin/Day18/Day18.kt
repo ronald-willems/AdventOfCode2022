@@ -5,9 +5,12 @@ import kotlin.math.absoluteValue
 
 object Day18 {
     val allMs = mutableListOf<Triple<Int,Int,Int>>()
-    var xSurfaces = mutableMapOf<Triple<Int,Int,Int>,Boolean>()
-    var ySurfaces = mutableMapOf<Triple<Int,Int,Int>,Boolean>()
-    var zSurfaces = mutableMapOf<Triple<Int,Int,Int>,Boolean>()
+
+
+
+    var outside = mutableListOf<Triple<Int,Int,Int>>()
+    var contained = mutableListOf<Triple<Int,Int,Int>>()
+
 
     fun readInput(inputType:String){
         File("src/main/resources/Day18/${inputType}Input.txt").forEachLine { line->
@@ -18,9 +21,11 @@ object Day18 {
 
     }
 
-    fun part1(inputType: String):Int{
-        readInput(inputType)
-        allMs.forEach { m->
+    fun countNotConnectedSurfaces(points: List<Triple<Int,Int,Int>>):Int{
+        var xSurfaces = mutableMapOf<Triple<Int,Int,Int>,Boolean>()
+        var ySurfaces = mutableMapOf<Triple<Int,Int,Int>,Boolean>()
+        var zSurfaces = mutableMapOf<Triple<Int,Int,Int>,Boolean>()
+        points.forEach { m->
             if (xSurfaces.get(m)==null) xSurfaces.put(m,true) else xSurfaces.remove(m)
             if (ySurfaces.get(m)==null) ySurfaces.put(m,true) else ySurfaces.remove(m)
             if (zSurfaces.get(m)==null) zSurfaces.put(m,true) else zSurfaces.remove(m)
@@ -38,10 +43,108 @@ object Day18 {
         }
 
         val result = xSurfaces.size + ySurfaces.size + zSurfaces.size
-        println(result)
+
         return(result)
 
     }
+
+
+    fun part1(inputType: String):Int{
+        readInput(inputType)
+        var result = countNotConnectedSurfaces(allMs)
+        println(result)
+        return(result)
+
+
+    }
+
+
+    fun getPos(inp:Triple<Int,Int,Int>,x:Int,y:Int,z:Int):Triple<Int,Int,Int>?{
+        var pos = Triple(inp.first+x, inp.second+y, inp.third+z)
+        if (pos.first>22) return null
+        if (pos.second>22) return null
+        if (pos.third>22) return null
+
+        if (pos.first<0) return null
+        if (pos.second<0) return null
+        if (pos.third<0) return null
+
+        if (pos in allMs) return null
+        if (pos in outside) return null
+        return pos
+    }
+
+
+
+    fun flush(toFlush: Triple<Int,Int,Int>? = Triple(1,1,1) ){
+        if (toFlush!=null){
+            outside.add(toFlush)
+
+            flush(getPos(toFlush,1,0,0))
+            flush(getPos(toFlush,-1,0,0))
+
+            flush(getPos(toFlush,0,1,0))
+            flush(getPos(toFlush,0,-1,0))
+
+            flush(getPos(toFlush,0,0,1))
+            flush(getPos(toFlush,0,0,-1))
+        }
+    }
+
+
+
+    fun part2(inputType: String):Int{
+        val totalSurfaces = part1(inputType)
+        flush();
+
+
+
+
+        var max = 6
+        if (inputType=="Test") max = 21
+        for (z in 1..max){
+            for (y in 1..max){
+                for (x in 1..max){
+                    var pos = Triple(x,y,z)
+                    if (pos !in allMs && pos !in outside ) contained.add(pos)
+                }
+            }
+        }
+        contained.forEach { println(it) }
+        var result = totalSurfaces-  countNotConnectedSurfaces(contained)
+        println(result)
+        return result
+
+    }
+
+    fun printAll(inputType: String){
+        readInput(inputType)
+        var max = 6
+        if (inputType=="Test") max = 21
+        for (z in 1..max){
+            println("Level: " + z)
+            println("123456789012345678901")
+            for (y in 1..max){
+                for (x in 1..max){
+                    if (allMs.contains(Triple(x,y,z))) print("#") else print(".")
+                }
+                println()
+            }
+            println()
+        }
+
+
+
+    }
+
+
+
+
+
+
+  /*  /// ******* DOES NOT WORK ************
+
+
 
     fun isConnected(a: Surface,b: Surface):Boolean{
         if (a.type == "X")
@@ -69,7 +172,7 @@ object Day18 {
         return false
     }
 
-    fun part2(inputType: String):Int{
+    fun part2x(inputType: String):Int{
         var totalSurfaces = part1(inputType)
         var unLinkedSurfaces = mutableListOf<Surface>()
         xSurfaces.keys.toMutableList().forEach {
@@ -111,5 +214,5 @@ object Day18 {
 
     data class Surface(var x:Int, var y:Int, var z:Int, var type:String){
         override fun toString(): String = "$type:($x, $y, $z)"
-    }
+    }*/
 }

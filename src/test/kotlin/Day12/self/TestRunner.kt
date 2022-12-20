@@ -2,6 +2,8 @@ package Day12.self
 
 import org.junit.jupiter.api.Test
 
+import org.junit.jupiter.api.Assertions.*
+
 internal class TestRunner {
 
     @Test
@@ -14,18 +16,17 @@ internal class TestRunner {
 
     @Test
     fun part1Sample() {
-        Day12Self.part1("Sample")
-
+        assertEquals(31,Day12Self.part1("Sample"))
     }
 
     @Test
-    fun part1() {
-        Day12Self.part1("Test",1000000)
-//        Day12.openPaths[0].display()
-//        println()
-//        Day12.openPaths[15].display()
+    fun part1Test() {
+        assertEquals(423,Day12Self.part1("Test"))
+    }
 
-        //Day12.finishedPaths.sortBy { it.points.size }
-        //Day12.finishedPaths[0].display()
+    @Test
+    fun part2() {
+        Day12Self.part2("Test")
+
     }
 }

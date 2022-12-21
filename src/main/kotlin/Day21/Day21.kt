@@ -10,24 +10,19 @@ object Day21 {
     fun readInput(inputType: String) {
         File("src/main/resources/Day21/${inputType}Input.txt").forEachLine { line ->
             val elements = line.replace(":", "").split(" ")
-
             if (elements[1][0].isDigit()){
                 allMonkeys.put(elements[0],NrMonkey(elements[0],elements[1].toInt()))
             }
             else {
                 allMonkeys.put(elements[0], MathMonkey(elements[0], elements[1], elements[2], elements[3]))
             }
-
         }
-
     }
 
     fun part1(inputType: String):Long{
         readInput(inputType)
         val monkeysToSort = mutableListOf<Monkey>()
         monkeysToSort.add( allMonkeys.get("root")!!)
-
-
 
         while (monkeysToSort.size>0){
               val toHandle = monkeysToSort.toMutableList()
@@ -39,13 +34,12 @@ object Day21 {
                     monkeysToSort.add(allMonkeys.get(it.dep2)!!)
                 }
             }
-
         }
+
         var rootYell = 0.toLong();
         sortedMonkeys.reversed().forEach {
             var yell = it.yell()!!
             if (it.name=="root") rootYell = yell
-            //println(it.name + "HI " + it.humanInfluence())
 
         }
 
@@ -57,11 +51,12 @@ object Day21 {
     fun part2(inputType: String):Long{
         part1(inputType)
 
+        //Manually checked which monkey the root depends on was influenced by humn
         var toMatch = allMonkeys[(allMonkeys["root"]!! as MathMonkey).dep2]!!.yell()!!
         var currMonkey = allMonkeys[(allMonkeys["root"]!! as MathMonkey).dep1]!!
 
         while (currMonkey.name != "humn"){
-                //currMonkey has to yell 'to Match'
+            //currMonkey has to yell 'to Match'
             println("Who: " + currMonkey.name + "To Match: " + toMatch + "Class: " +  currMonkey.javaClass)
             println(toMatch)
             toMatch = currMonkey.toMatchPredecessor(toMatch)
@@ -69,9 +64,7 @@ object Day21 {
 
         }
 
-        println("To match voor human: " + toMatch)
-
-
+        println("To match for humn: " + toMatch)
 
         return toMatch
     }

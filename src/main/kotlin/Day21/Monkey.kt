@@ -73,9 +73,7 @@ class MathMonkey(name: String, val dep1: String, val operator: String, val dep2:
                 "*" -> result = toMatch / getDep2().yell()!!
                 "/" -> result = getDep2().yell()!! * toMatch
             }
-
-        } else { //HI is Dep2
-
+        } else { //Dep2
             when (operator) {
                 "+" -> result = toMatch - getDep1().yell()!!
                 "-" -> result = getDep1().yell()!! - toMatch

@@ -15,11 +15,13 @@ object Day20 {
 
 
 
-    fun part1(inputType: String) {
+    fun part2(inputType: String) {
         readInput(inputType)
         val total = nrs.size
         var sorted = nrs.toMutableList()
+        sorted.forEach{it.value *= 811589153}
 
+        for (i in 1..10){
         nrs.forEach {
             //Get new index
             var currIndex = sorted.indexOf(it)
@@ -38,6 +40,7 @@ object Day20 {
 
 
         }
+        }
         val zeroObject = sorted.filter { it.value ==0.toLong() }.first()
         val zeroIndex = sorted.indexOf(zeroObject)
         val nr1K = (1000+zeroIndex) % total
@@ -52,4 +55,4 @@ object Day20 {
     }
 }
 
-class IntObject(val value: Long)
+class IntObject(var value: Long)

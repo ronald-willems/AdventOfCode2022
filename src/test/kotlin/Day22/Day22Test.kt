@@ -17,7 +17,7 @@ internal class Day22Test {
 
     @Test
     fun part2() {
-        Day22.initCube()
+        Day22.initCube("Sample")
         assertEquals(5031,Day22.findPath("Sample"))
         Day22.display()
         //91472 to high

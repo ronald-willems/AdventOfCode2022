@@ -10,6 +10,7 @@ object Day22 {
     var pos = Position(0, 1)
     var dir = Direction("R")
     val path = mutableMapOf<Position,Direction>()
+    val transformations = mutableMapOf<Situation,Situation>()
 
     var cube = false;
 
@@ -52,6 +53,8 @@ object Day22 {
         cube = true
         val cubesize = if (inputType=="Sample") 4 else 50
 
+        //TODO Make map Situation => Situation
+        //14
 
 
     }
@@ -80,18 +83,8 @@ object Day22 {
 
     }
 
-    fun fly(nextPos: Position){
-        //ga terug tot begin en dan weer 1 vooruit.
-        var goBackItem = ""
-        while (goBackItem != " ") {
-            nextPos.x -= dir.getXDir()
-            nextPos.y -= dir.getYDir()
-            goBackItem = mapItem(nextPos)
-        }
-        nextPos.x += dir.getXDir()
-        nextPos.y += dir.getYDir()
 
-    }
+
 
 
     fun move(nr: Int) {
@@ -99,17 +92,20 @@ object Day22 {
         for (i in 1..nr) {
 
             val nextPos = pos.copy()
+            var nextDir = dir.copy()
             nextPos.x += 1 * dir.getXDir()
             nextPos.y += 1 * dir.getYDir()
             var mapItem = mapItem(nextPos)
             if (mapItem == " ") {
-               nextPos.fly()
+               nextDir = nextPos.fly(nextDir)
+
             }
             mapItem = mapItem(nextPos)
             if (mapItem == "#") {
                 break;
             } else {
 
+                dir = nextDir
                 pos = nextPos
                 path.put(pos,dir)
             }
@@ -230,26 +226,32 @@ data class Direction(var dir: String) {
 
 data class Position(var x: Int, var y: Int){
 
-    fun fly() {
+
+    fun fly(dir:Direction):Direction{
+        return if (Day22.cube) cubeFly(dir) else simpleFly(dir)
+    }
+
+    fun cubeFly(dir:Direction):Direction{
+        //TODO
+        //if this in map then pos = new pos and to turn
+
+        return Day22.dir
+    }
+
+    fun simpleFly(dir:Direction):Direction {
         //ga terug tot begin en dan weer 1 vooruit.
         var goBackItem = ""
         while (goBackItem != " ") {
-            x -= Day22.dir.getXDir()
-            y -= Day22.dir.getYDir()
+            x -= dir.getXDir()
+            y -= dir.getYDir()
             goBackItem = Day22.mapItem(this)
         }
-        x += Day22.dir.getXDir()
-        y += Day22.dir.getYDir()
+        x += dir.getXDir()
+        y += dir.getYDir()
+
+        return dir
+
     }
 }
 
-//ga terug tot begin en dan weer 1 vooruit.
-/*
-var goBackItem = ""
-while (goBackItem != " ") {
-    nextPos.x -= Day22.dir.getXDir()
-    nextPos.y -= Day22.dir.getYDir()
-    goBackItem = Day22.mapItem(nextPos)
-}
-nextPos.x += dir.getXDir()
-nextPos.y += dir.getYDir()*/
+data class Situation(val pos:Position, val dir:Direction)

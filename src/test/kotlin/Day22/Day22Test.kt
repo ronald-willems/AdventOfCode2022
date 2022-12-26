@@ -16,13 +16,31 @@ internal class Day22Test {
     }
 
     @Test
+    fun cubeInit(){
+
+        Day22.initCube()
+        assertEquals(Situation(Position(103,51),Direction("U")),Day22.connections.get(Situation(Position(101,53),Direction("R"))))
+        assertEquals(Situation(Position(50,98),Direction("R")),Day22.connections.get(Situation(Position(48,100),Direction("U"))))
+
+    }
+    @Test
+    fun connect(){
+        val f = CubeSite(101..101,51..100)
+        val n = CubeSite(101..150,51..51)
+        val cons = Day22.createConnections(f, Direction("R"), n, Direction("U"), false)
+        cons.forEach{
+            println(" " +it.key + " " + it.value)
+        }
+    }
+
+    //
+
+    @Test
     fun part2() {
-        Day22.initCube("Sample")
-        assertEquals(5031,Day22.findPath("Sample"))
+        Day22.initCube()
+        Day22.findPath("Test")
         Day22.display()
-        //91472 to high
-        //63300 to low
-        //75252 to low
+
     }
 
 

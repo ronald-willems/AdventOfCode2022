@@ -10,8 +10,8 @@ object Day22 {
     var pos = Position(0, 1)
     var dir = Direction("R")
     val path = mutableMapOf<Position,Direction>()
-    val transformations = mutableMapOf<Situation,Situation>()
 
+    val connections = mutableMapOf<Situation,Situation>()
     var cube = false;
 
     fun mapItem(x: Int, y: Int): String {
@@ -49,12 +49,85 @@ object Day22 {
 
     }
 
-    fun initCube(inputType: String){
-        cube = true
-        val cubesize = if (inputType=="Sample") 4 else 50
+    fun createConnections(a: CubeSite, da: Direction, b: CubeSite,db: Direction, flip:Boolean):
+        Map<Situation,Situation>
 
-        //TODO Make map Situation => Situation
-        //14
+    {
+        val result = mutableMapOf<Situation,Situation>()
+        for (x in a.xrange){
+            for (y in a.yrange){
+                val step = (x - a.xrange.first) + (y - a.yrange.first)
+                //print("Step: " + step + " " + x + "," + y)
+
+                val currSituation = Situation(Position(x,y),da)
+                var newPos:Position?=null
+                if (flip){
+                    if (b.xrange.first==b.xrange.last){
+                        newPos = Position(b.xrange.first,b.yrange.last-step)
+                    }
+                    else {
+                        newPos = Position(b.xrange.last-step,b.yrange.first)
+                    }
+                }
+                else{
+                    if (b.xrange.first==b.xrange.last){
+                        newPos = Position(b.xrange.first,b.yrange.first+step)
+                    }
+                    else {
+                        newPos = Position(b.xrange.first+step,b.yrange.first)
+                    }
+
+                }
+
+                result.put(currSituation, Situation(newPos!!,db))
+            }
+        }
+        return result
+
+    }
+
+    fun initCube(){
+        cube = true
+
+
+        //All CubeSites to map
+        val a = CubeSite(51..100,0..0)
+        val b = CubeSite(101..150,0..0)
+        val c = CubeSite(50..50,1..50)
+        val d = CubeSite(151..151,1..50)
+        val n = CubeSite(101..150,51..51)
+        val e = CubeSite(50..50,51..100)
+        val f = CubeSite(101..101,51..100)
+        val g = CubeSite(1..50,100..100)
+        val h = CubeSite(0..0,101..150)
+        val i = CubeSite(101..101,101..150)
+        val j = CubeSite(51..100,151..151)
+        val k = CubeSite(0..0,151..200)
+        val l = CubeSite(51..51,151..200)
+        val m = CubeSite(1..50,201..201)
+
+        connections.putAll(createConnections(a,Direction("U"),k,Direction("R"),false))
+        connections.putAll(createConnections(k,Direction("L"),a,Direction("D"),false))
+
+        connections.putAll(createConnections(b,Direction("U"),m,Direction("U"),false))
+        connections.putAll(createConnections(m,Direction("D"),b,Direction("D"),false))
+
+        connections.putAll(createConnections(c,Direction("L"),h,Direction("R"),true))
+        connections.putAll(createConnections(h,Direction("L"),c,Direction("R"),true))
+
+        connections.putAll(createConnections(d,Direction("R"),i,Direction("L"),true))
+        connections.putAll(createConnections(i,Direction("R"),d,Direction("L"),true))
+
+        connections.putAll(createConnections(e,Direction("L"),g,Direction("D"),false))
+        connections.putAll(createConnections(g,Direction("U"),e,Direction("R"),false))
+
+        connections.putAll(createConnections(n,Direction("D"),f,Direction("L"),false))
+        connections.putAll(createConnections(f,Direction("R"),n,Direction("U"),false))
+
+        connections.putAll(createConnections(j,Direction("D"),l,Direction("L"),false))
+        connections.putAll(createConnections(l,Direction("R"),j,Direction("U"),false))
+
+
 
 
     }
@@ -232,10 +305,14 @@ data class Position(var x: Int, var y: Int){
     }
 
     fun cubeFly(dir:Direction):Direction{
-        //TODO
-        //if this in map then pos = new pos and to turn
 
-        return Day22.dir
+        //if this in map then pos = new pos and to turn
+        val newSit = Day22.connections.get(Situation(this,dir))!!
+        x = newSit.pos.x + newSit.dir.getXDir() //1 step extra
+        y = newSit.pos.y + newSit.dir.getYDir() //1 step extra
+
+
+        return newSit.dir
     }
 
     fun simpleFly(dir:Direction):Direction {
@@ -255,3 +332,5 @@ data class Position(var x: Int, var y: Int){
 }
 
 data class Situation(val pos:Position, val dir:Direction)
+
+data class CubeSite(val xrange:IntRange, val yrange:IntRange)

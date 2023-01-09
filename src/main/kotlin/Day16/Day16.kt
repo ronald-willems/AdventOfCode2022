@@ -62,12 +62,12 @@ object Day16 {
     }
 
     fun printResult(steps: MutableList<Step>){
-        val pf = PathFinder(26)
+        val pf = PathFinder(26,true)
         steps.removeFirst()
         steps.forEach {
             pf.addStep(it)
             println("Step Added:" + it)
-           // println(pf.state())
+            println(pf.state())
         }
 
     }
@@ -84,8 +84,8 @@ object Day16 {
 
     fun part2(inputType: String):Int{
         readInput(inputType)
-        part2 = true
-        val pf = PathFinder(26)
+
+        val pf = PathFinder(26,true)
         val result = pf.maximize()
         println("Eindresultaat:  " + result)
 

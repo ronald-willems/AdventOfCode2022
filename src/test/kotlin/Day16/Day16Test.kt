@@ -30,7 +30,7 @@ internal class Day16Test {
     }
 
 
-    //TODO Waarom 6 te veel? Misschien winnend scenario plotten?
+
     @Test
     fun part2Sample(){
         assertEquals(1707, Day16.part2("Sample"))
@@ -39,7 +39,7 @@ internal class Day16Test {
 
     @Test
     fun part2(){
-        assertEquals(1899, Day16.part2("Test")) //1899 is te klein
+        assertEquals(2594, Day16.part2("Test")) //.. is te klein
 
     }
 

@@ -2,7 +2,7 @@ package Day16
 
 import java.util.*
 
-class PathFinder(val maxMinute: Int = 30) {
+class PathFinder(val maxMinute: Int = 30, val withElephant: Boolean = false) {
     val steps = mutableListOf<Step>()
     val turnedValves = mutableSetOf<Valve>()
     val statesEvaluated = mutableSetOf<State>()
@@ -10,17 +10,30 @@ class PathFinder(val maxMinute: Int = 30) {
     var currentPressure = 0
     var totalPressure = 0
     var maxPressureFound = 0
-    var currentValveMe = Day16.valvesMap["AA"]!!
-    var currentValveElephant = Day16.valvesMap["AA"]!!
+    val startValve = Day16.valvesMap["AA"]!!
+    var currentValveMe = startValve
+    var currentValveElephant: Valve? = null
     var resultSteps = listOf<Step>()
 
 
     init {
-        steps.add(Step(Day16.valvesMap["AA"]!!, false, true))
+        if (withElephant) {
+            steps.add(Step(startValve, false, startValve, false))
+            currentValveElephant = startValve
+        } else
+            steps.add(Step(startValve, false))
     }
 
     fun state(): State {
-        return State(minutesRemaining, currentValveMe, currentValveElephant, currentPressure, totalPressure,  turnedValves.toMutableSet())
+
+        return State(
+            minutesRemaining,
+            currentValveMe,
+            currentValveElephant,
+            currentPressure,
+            totalPressure,
+            turnedValves.toMutableSet()
+        )
     }
 
     fun maxRemaining(): Int {
@@ -31,7 +44,7 @@ class PathFinder(val maxMinute: Int = 30) {
 
             if (countRemaining > 0) {
                 if (it !in turnedValves) {
-                    result += it.rate * (countRemaining)
+                    result += it.rate * (countRemaining+1)
                     countRemaining -= 2
                 }
             }
@@ -42,18 +55,23 @@ class PathFinder(val maxMinute: Int = 30) {
 
 
     fun addStep(step: Step) {
-        if (!step.elephant) {
-            totalPressure += currentPressure
-            minutesRemaining--
-        }
+
+        totalPressure += currentPressure
+        minutesRemaining--
+
         steps.add(step)
-        if (step.elephant) currentValveElephant = step.dest else
-            currentValveMe = step.dest
+        currentValveElephant = step.elephantDest
+        currentValveMe = step.dest
 
         if (step.turn) {
 
             turnedValves.add(step.dest)
             currentPressure += step.dest.rate
+        }
+
+        if (step.elephantTurn) {
+            turnedValves.add(step.elephantDest!!)
+            currentPressure += step.elephantDest.rate
         }
 
     }
@@ -64,24 +82,30 @@ class PathFinder(val maxMinute: Int = 30) {
             currentPressure -= toRemove.dest.rate
             turnedValves.remove(toRemove.dest)
 
+        }
 
+        if (toRemove.elephantTurn) {
+            currentPressure -= toRemove.elephantDest!!.rate
+            turnedValves.remove(toRemove.elephantDest!!)
         }
 
         steps.removeLast()
-        if (steps.size > 2) {
-            if (toRemove.elephant) currentValveElephant = steps[steps.size - 2].dest
-            currentValveMe = steps[steps.size - 2].dest
+
+        if (steps.size > 0) {
+
+            currentValveMe = steps.last().dest
+            currentValveElephant = steps.last().elephantDest
 
         } else {
-            if (toRemove.elephant) currentValveElephant = Day16.valvesMap["AA"]!!
+            if (toRemove.elephantDest!=null )   currentValveElephant = Day16.valvesMap["AA"]!!
+            else currentValveElephant = null
             currentValveMe = Day16.valvesMap["AA"]!!
 
         }
 
-        if (!toRemove.elephant) {
-            totalPressure -= currentPressure
-            minutesRemaining++
-        }
+        totalPressure -= currentPressure
+        minutesRemaining++
+
     }
 
 
@@ -91,14 +115,6 @@ class PathFinder(val maxMinute: Int = 30) {
 
 
     fun nextStep(): Step? {
-        var from = currentValveMe
-        var elephant = false
-        if (Day16.part2) {
-            if (!steps.last().elephant) {
-                from = currentValveElephant
-                elephant = true
-            }
-        }
 
 
         val lastStep = steps.last()
@@ -113,10 +129,35 @@ class PathFinder(val maxMinute: Int = 30) {
             lastStep.options = mutableListOf<Step>()
             val options = lastStep.options!!
 
-            if (from !in turnedValves && from.rate > 0) options.add(Step(from, true, elephant))
+            val currEl = currentValveElephant
+            if (currEl==null){
 
-            from.connections.forEach {
-                options.add(Step(it, false, elephant))
+                if (currentValveMe !in turnedValves && currentValveMe.rate > 0) options.add(Step(currentValveMe, true))
+
+                currentValveMe.connections.forEach {
+                    options.add(Step(it, false))
+
+                }
+            }
+            else{
+                //Part 2
+                val optionsMe = currentValveMe.connections.toMutableList()
+                if (currentValveMe !in turnedValves && currentValveMe.rate > 0) optionsMe.add(currentValveMe)
+
+                val optionsElephant = currEl.connections.toMutableList()
+                if (currEl !in turnedValves && currEl.rate > 0 && currentValveMe != currEl) optionsElephant.add(currEl)
+
+                optionsMe.forEach { connMe ->
+                    optionsElephant.forEach { connEl ->
+                        var turnMe = false
+                        var turnEl = false
+                        if (connMe == currentValveMe) turnMe = true
+                        if (connEl == currentValveElephant) turnEl = true
+                        options.add(Step(connMe, turnMe, connEl, turnEl))
+
+                    }
+
+                }
 
             }
 
@@ -129,6 +170,7 @@ class PathFinder(val maxMinute: Int = 30) {
             return toReturn
         } else return null
     }
+
 
 
     fun maximize(): Int {
@@ -164,6 +206,7 @@ class PathFinder(val maxMinute: Int = 30) {
                     maxPressureFound = totalPressure
                     println("Max gevonden: " + maxPressureFound + " Iteratie: " + it)
                     resultSteps = steps.toList()
+                   // if (maxPressureFound>1707) Day16.printResult(resultSteps.toMutableList())
                 }
                 removeLast()
             }
